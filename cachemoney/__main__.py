@@ -16,13 +16,14 @@ def main() -> None:
     ap.add_argument("--decompress", "-d", action="store_true", default=True, help="automatically gunzip")
     args = ap.parse_args()
     output_root = args.output_root
+    cache_dir = os.path.abspath(os.path.expanduser(args.cache_dir))
     cache_files = [
         filename
-        for filename in os.listdir(args.cache_dir)
+        for filename in os.listdir(cache_dir)
         if re.match("^[0-9a-f]+_0$", filename)
     ]
     for filename in cache_files:
-        file = os.path.join(args.cache_dir, filename)
+        file = os.path.join(cache_dir, filename)
         with open(file, "rb") as f:
             key, data = parse_simplefile(f)
         if args.filter and not fnmatch.fnmatch(key, args.filter):
