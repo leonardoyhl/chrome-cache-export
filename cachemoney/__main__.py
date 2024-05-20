@@ -11,9 +11,9 @@ from cachemoney.simplefile import parse_simplefile
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache-dir", "-i", required=True)
-    ap.add_argument("--output-root", "-o", help="output root directory (if not set, no files are written)")
+    ap.add_argument("--output-root", "-o", default="files", help="output root directory (if not set, no files are written)")
     ap.add_argument("--filter", "-f", help="filter wildcard pattern (e.g. *jpg)")
-    ap.add_argument("--decompress", "-d", action="store_true", default=False, help="automatically gunzip")
+    ap.add_argument("--decompress", "-d", action="store_true", default=True, help="automatically gunzip")
     args = ap.parse_args()
     output_root = args.output_root
     cache_files = [
