@@ -17,16 +17,17 @@ def main() -> None:
     args = ap.parse_args()
     output_root = args.output_root
     cache_files = [
-        os.path.join(args.cache_dir, filename)
+        filename
         for filename in os.listdir(args.cache_dir)
         if re.match("^[0-9a-f]+_0$", filename)
     ]
-    for file in cache_files:
+    for filename in cache_files:
+        file = os.path.join(args.cache_dir, filename)
         with open(file, "rb") as f:
             key, data = parse_simplefile(f)
         if args.filter and not fnmatch.fnmatch(key, args.filter):
             continue
-        print(key)
+        print(filename, "->", key)
         if output_root:
             url = urlparse(key)
             output_path = os.path.join(output_root, url.netloc, url.path.lstrip("/"))
@@ -37,12 +38,12 @@ def main() -> None:
                 try:
                     orig_len = len(data)
                     data = gzip.decompress(data)
-                    print(" .. decompressed from", orig_len, "to", len(data))
+                    print("  .. decompressed from", orig_len, "to", len(data))
                 except Exception:
                     pass
             with open(output_path, "wb") as outf:
                 outf.write(data)
-            print(" -> ", output_path)
+            print("  ->", output_path)
             stat = os.stat(file)
             os.utime(output_path, (stat.st_atime, stat.st_mtime))
 
